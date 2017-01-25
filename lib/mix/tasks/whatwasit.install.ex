@@ -82,7 +82,23 @@ defmodule Mix.Tasks.Whatwasit.Install do
     config
     |> gen_migration
     |> gen_version_model
+    |> gen_repo
     |> print_instructions
+  end
+
+  defp gen_repo(%{whodoneit_map: true, binding: binding} = config) do
+    Mix.Phoenix.copy_from paths(),
+      "priv/templates/whatwasit.install/lib/whatwasit", "", binding, [
+        {:eex, "repo_map.ex", "lib/whatwasit/repo.ex"},
+      ]
+    config
+  end
+  defp gen_repo(%{binding: binding} = config) do
+    Mix.Phoenix.copy_from paths(),
+      "priv/templates/whatwasit.install/lib/whatwasit", "", binding, [
+        {:eex, "repo.ex", "lib/whatwasit/repo.ex"},
+      ]
+    config
   end
 
   defp gen_version_model(%{models: true, whodoneit_map: true, boilerplate: true, binding: binding} = config) do
